@@ -7,6 +7,7 @@ using Calendar.Kafka.Configuration.Extensions;
 using Calendar.WebApp.Domain;
 using Calendar.WebApp.Domain.Interfaces;
 using Calendar.WebApp.Messaging;
+using Calendar.WebApp.Messaging.Handlers;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;

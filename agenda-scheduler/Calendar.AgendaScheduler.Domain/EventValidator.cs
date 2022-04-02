@@ -20,7 +20,12 @@ namespace Calendar.AgendaScheduler.Domain
         {
             if (@event.Start > @event.End)
             {
-                return ValidationResult.Failed("The dates are invalid");
+                return ValidationResult.Failed("End date must be greater than start date");
+            }
+
+            if (@event.Start.Date != @event.End.Date)
+            {
+                return ValidationResult.Failed("The event can't span more then one day");
             }
 
             var overlaps = await _eventsRepository.GetAsync(x =>
