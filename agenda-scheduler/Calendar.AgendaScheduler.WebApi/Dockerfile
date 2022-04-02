@@ -5,10 +5,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["agenda-scheduler/Calendar.AgendaScheduler.WebApi/Calendar.AgendaScheduler.WebApi.csproj", "Calendar.AgendaScheduler.WebApi/"]
+COPY . .
 RUN dotnet restore "agenda-scheduler/Calendar.AgendaScheduler.WebApi/Calendar.AgendaScheduler.WebApi.csproj"
 COPY . .
-WORKDIR "/src/Calendar.AgendaScheduler.WebApi"
+WORKDIR "/src/agenda-scheduler/Calendar.AgendaScheduler.WebApi"
 RUN dotnet build "Calendar.AgendaScheduler.WebApi.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -1,0 +1,14 @@
+1) create images
+
+docker build -f ./agenda-viewer/Calendar.AgendaViewer.WebApi/Dockerfile -t calendar/agenda-viewer:0.1.0 .
+docker build -f ./agenda-scheduler/Calendar.AgendaScheduler.WebApi/Dockerfile -t calendar/agenda-scheduler:0.1.0 .
+docker build -f ./front-end/Calendar.WebApp/Dockerfile -t calendar/front-end:0.1.0 .
+
+2) add to kuber
+
+helm upgrade --install calendar-release . \
+    --namespace=calendar \
+    --set agenda-viewer.image.tag="0.1.0" \
+    --set agenda-scheduler.image.tag="0.1.0" \
+    --set front-end.image.tag="0.1.0" \
+    --debug --dry-run

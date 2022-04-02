@@ -5,10 +5,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["front-end/Calendar.WebApp/Calendar.WebApp.csproj", "Calendar.WebApp/"]
+COPY . .
 RUN dotnet restore "front-end/Calendar.WebApp/Calendar.WebApp.csproj"
 COPY . .
-WORKDIR "/src/Calendar.WebApp"
+WORKDIR "/src/front-end/Calendar.WebApp"
 RUN dotnet build "Calendar.WebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
