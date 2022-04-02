@@ -8,10 +8,10 @@ namespace Calendar.AgendaScheduler.Client
 {
     public interface IAgendaSchedulerClient
     {
-        [Put("api/agenda/event")]
+        [Post("/api/agenda/event")]
         Task AddEventAsync([Body]Event @event, CancellationToken cancellationToken = default);
 
-        [Delete("api/agenda/event/{id}")]
+        [Delete("/api/agenda/event/{id}")]
         Task RemoveEventAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

@@ -12,8 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\common\Calendar.Kafka.Abstractions\Calendar.Kafka.Abstractions.csproj" />
+    <ProjectReference Include="..\..\common\Calendar.Kafka.Configuration.Extensions\Calendar.Kafka.Configuration.Extensions.csproj" />
     <ProjectReference Include="..\Calendar.AgendaViewer.DataAccess.Contracts\Calendar.AgendaViewer.DataAccess.Contracts.csproj" />
     <ProjectReference Include="..\Calendar.AgendaViewer.DataAccess.Redis\Calendar.AgendaViewer.DataAccess.Redis.csproj" />
+    <ProjectReference Include="..\Calendar.AgendaViewer.Domain\Calendar.AgendaViewer.Domain.csproj" />
   </ItemGroup>
 
 </Project>

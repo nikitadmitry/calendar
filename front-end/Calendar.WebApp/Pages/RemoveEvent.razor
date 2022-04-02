@@ -23,7 +23,14 @@
 
     async Task OnSubmit(Event model)
     {
-        await _mediator.Send(new RemoveEventCommand(model.Id));
+        try
+        {
+            await _mediator.Send(new RemoveEventCommand(model.Id));
+        }
+        catch (Exception e)
+        {
+            // ignored
+        }
         DialogService.Close(true);
     }
 }

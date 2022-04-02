@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\common\Calendar.Agenda.Domain.Entities\Calendar.Agenda.Domain.Entities.csproj" />
+      <ProjectReference Include="..\Calendar.AgendaScheduler.Domain.Entities\Calendar.AgendaScheduler.Domain.Entities.csproj" />
     </ItemGroup>
 
 </Project>

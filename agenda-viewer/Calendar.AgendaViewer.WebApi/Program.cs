@@ -1,5 +1,8 @@
+using Calendar.Agenda.Domain.Entities.Messages;
 using Calendar.AgendaViewer.DataAccess.Contracts;
 using Calendar.AgendaViewer.DataAccess.Memory;
+using Calendar.AgendaViewer.Domain;
+using Calendar.Kafka.Configuration.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,8 +15,11 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Conn
     builder.Configuration["Redis:Persistent"]));
 builder.Services.AddSingleton<IEventsRepository, EventsRepository>();
 
+builder.Services.Configure<KafkaConsumerOptions>(builder.Configuration.GetSection("Kafka"));
+builder.Services.AddKafkaConsumer<EventAddedMessageHandler, EventAddedMessage>();
+builder.Services.AddKafkaConsumer<EventRemovedMessageHandler, EventRemovedMessage>();
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

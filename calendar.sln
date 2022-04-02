@@ -61,6 +61,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.AgendaScheduler.Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.AgendaScheduler.DataAccess.Interfaces", "agenda-scheduler\Calendar.AgendaScheduler.DataAccess.Interfaces\Calendar.AgendaScheduler.DataAccess.Interfaces.csproj", "{F61DC067-275E-424B-A9DC-F46A7CCDA000}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.AgendaScheduler.Domain.Entities", "agenda-scheduler\Calendar.AgendaScheduler.Domain.Entities\Calendar.AgendaScheduler.Domain.Entities.csproj", "{33F7597B-0A05-41E2-8219-227D2CDFD1B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.Kafka.Abstractions", "common\Calendar.Kafka.Abstractions\Calendar.Kafka.Abstractions.csproj", "{E13E711F-343C-40D8-978F-C5F53589B85B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.Kafka.Configuration.Extensions", "common\Calendar.Kafka.Configuration.Extensions\Calendar.Kafka.Configuration.Extensions.csproj", "{A103858C-F49F-45B3-86FE-328805513FC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -138,6 +144,18 @@ Global
 		{F61DC067-275E-424B-A9DC-F46A7CCDA000}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F61DC067-275E-424B-A9DC-F46A7CCDA000}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F61DC067-275E-424B-A9DC-F46A7CCDA000}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33F7597B-0A05-41E2-8219-227D2CDFD1B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33F7597B-0A05-41E2-8219-227D2CDFD1B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33F7597B-0A05-41E2-8219-227D2CDFD1B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33F7597B-0A05-41E2-8219-227D2CDFD1B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E13E711F-343C-40D8-978F-C5F53589B85B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E13E711F-343C-40D8-978F-C5F53589B85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E13E711F-343C-40D8-978F-C5F53589B85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E13E711F-343C-40D8-978F-C5F53589B85B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A103858C-F49F-45B3-86FE-328805513FC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A103858C-F49F-45B3-86FE-328805513FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A103858C-F49F-45B3-86FE-328805513FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A103858C-F49F-45B3-86FE-328805513FC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CEFF8861-A545-435D-AF4F-062AA5D3C085} = {5B6906D1-4FB2-4CA3-8093-C7D41CE1BBBF}
@@ -165,5 +183,8 @@ Global
 		{11B941FC-D6E8-40C1-9106-1423B5E7A639} = {9CDFB1F4-0037-4F64-A77B-8DC8B4044641}
 		{944717E4-E80A-41A5-B930-6758AB95188C} = {9CDFB1F4-0037-4F64-A77B-8DC8B4044641}
 		{F61DC067-275E-424B-A9DC-F46A7CCDA000} = {9CDFB1F4-0037-4F64-A77B-8DC8B4044641}
+		{33F7597B-0A05-41E2-8219-227D2CDFD1B0} = {E21060CF-6645-49B2-BAF3-F6CA0EC4D94B}
+		{E13E711F-343C-40D8-978F-C5F53589B85B} = {C8766516-3788-4E58-902F-39BC5355311B}
+		{A103858C-F49F-45B3-86FE-328805513FC9} = {C8766516-3788-4E58-902F-39BC5355311B}
 	EndGlobalSection
 EndGlobal

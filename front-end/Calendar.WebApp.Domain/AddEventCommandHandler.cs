@@ -1,13 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Calendar.Agenda.Domain.Entities;
 using Calendar.AgendaScheduler.Client;
 using Calendar.WebApp.Domain.Interfaces;
 using MediatR;
 
 namespace Calendar.WebApp.Domain
 {
-    public class AddEventCommandHandler : IRequestHandler<AddEventCommand, Event>
+    public class AddEventCommandHandler : IRequestHandler<AddEventCommand>
     {
         private readonly IAgendaSchedulerClient _agendaSchedulerClient;
 
@@ -16,9 +15,10 @@ namespace Calendar.WebApp.Domain
             _agendaSchedulerClient = agendaSchedulerClient;
         }
 
-        public Task<Event> Handle(AddEventCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AddEventCommand request, CancellationToken cancellationToken)
         {
-            return _agendaSchedulerClient.AddEventAsync(request.Event, cancellationToken);
+            await _agendaSchedulerClient.AddEventAsync(request.Event, cancellationToken);
+            return Unit.Value;
         }
     }
 }

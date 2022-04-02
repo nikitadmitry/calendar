@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
@@ -23,20 +24,27 @@ namespace Calendar.AgendaViewer.DataAccess.Memory
         {
             var db = _connectionMultiplexer.GetDatabase();
 
-            return db.SetAddAsync(new RedisKey(SetName),
+            return db.HashSetAsync(new RedisKey(SetName),
+                @event.Id.ToString(),
                 JsonSerializer.Serialize(@event),
-                CommandFlags.FireAndForget);
+                flags: CommandFlags.FireAndForget);
+        }
+
+        public Task RemoveAsync(Guid eventId, CancellationToken cancellationToken)
+        {
+            var db = _connectionMultiplexer.GetDatabase();
+            return db.HashDeleteAsync(new RedisKey(SetName), eventId.ToString(), CommandFlags.FireAndForget);
         }
 
         public async IAsyncEnumerable<Event> GetAllAsync([EnumeratorCancellation] CancellationToken cancellationToken)
         {
             var db = _connectionMultiplexer.GetDatabase();
 
-            var scanResult = db.SetScanAsync(new RedisKey(SetName));
+            var hashEntries = await db.HashGetAllAsync(new RedisKey(SetName));
 
-            await foreach (string row in scanResult.WithCancellation(cancellationToken))
+            foreach (var row in hashEntries)
             {
-                yield return JsonSerializer.Deserialize<Event>(row)!;
+                yield return JsonSerializer.Deserialize<Event>(row.Value)!;
             }
         }
     }

@@ -13,16 +13,20 @@ namespace Calendar.AgendaScheduler.WebApi.Controllers
     [Route("api/[controller]")]
     public class AgendaController : ControllerBase
     {
-        private readonly IEventsRepository _eventsRepository;
         private readonly IEventScheduler _eventScheduler;
+        private readonly IEventRemover _eventRemover;
+        private readonly IEventsRepository _eventsRepository;
 
-        public AgendaController(IEventsRepository eventsRepository, IEventScheduler eventScheduler)
+        public AgendaController(IEventScheduler eventScheduler,
+            IEventRemover eventRemover,
+            IEventsRepository eventsRepository)
         {
-            _eventsRepository = eventsRepository;
             _eventScheduler = eventScheduler;
+            _eventRemover = eventRemover;
+            _eventsRepository = eventsRepository;
         }
 
-        [HttpPut("event")]
+        [HttpPost("event")]
         public Task AddEventAsync(Event @event, CancellationToken cancellationToken)
         {
             return _eventScheduler.ScheduleAsync(@event, cancellationToken);
@@ -31,7 +35,7 @@ namespace Calendar.AgendaScheduler.WebApi.Controllers
         [HttpDelete("event/{id}")]
         public Task DeleteEventAsync(Guid id, CancellationToken cancellationToken)
         {
-            return _eventsRepository.RemoveAsync(id, cancellationToken);
+            return _eventRemover.RemoveAsync(id, cancellationToken);
         }
 
 #if DEBUG

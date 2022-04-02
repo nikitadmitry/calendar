@@ -18,8 +18,13 @@ namespace Calendar.AgendaScheduler.Domain
 
         public async Task<ValidationResult> IsValidAsync(Event @event, CancellationToken cancellationToken)
         {
+            if (@event.Start > @event.End)
+            {
+                return ValidationResult.Failed("The dates are invalid");
+            }
+
             var overlaps = await _eventsRepository.GetAsync(x =>
-                x.Start <= @event.End && x.End >= @event.Start, cancellationToken);
+                x.Start < @event.End && x.End > @event.Start, cancellationToken);
 
             if (overlaps.Any())
             {

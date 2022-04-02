@@ -7,8 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\common\Calendar.Kafka.Abstractions\Calendar.Kafka.Abstractions.csproj" />
-      <ProjectReference Include="..\Calendar.AgendaViewer.DataAccess.Contracts\Calendar.AgendaViewer.DataAccess.Contracts.csproj" />
+      <ProjectReference Include="..\Calendar.Agenda.Domain.Entities\Calendar.Agenda.Domain.Entities.csproj" />
     </ItemGroup>
 
 </Project>

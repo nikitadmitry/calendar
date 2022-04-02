@@ -3,5 +3,5 @@ using MediatR;
 
 namespace Calendar.WebApp.Domain.Interfaces
 {
-    public record AddEventCommand(Event Event) : IRequest<Event>;
+    public record AddEventCommand(Event Event) : IRequest;
 }

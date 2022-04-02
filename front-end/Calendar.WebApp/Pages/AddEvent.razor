@@ -2,6 +2,7 @@
 @using Calendar.WebApp.Domain.Interfaces
 @using MediatR
 @inject DialogService DialogService
+@inject NotificationService NotificationService
 @inject IMediator _mediator
 
 <RadzenTemplateForm TItem="Event" Data="@_model" Submit="@OnSubmit">
@@ -30,6 +31,7 @@
         <div class="col">
             <RadzenDatePicker Name="End" @bind-Value="@_model.End" ShowTime="true" />
             <RadzenRequiredValidator Component="End" Text="End is required" />
+            <RadzenCompareValidator Value="@_model.Start" Component="End" Operator="CompareOperator.GreaterThanEqual" />
         </div>
     </div>
     <div class="row">
@@ -37,7 +39,7 @@
         <div class="col">
             <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
             <RadzenButton ButtonStyle="ButtonStyle.Secondary" ButtonType="ButtonType.Reset"
-                          Click="@(() => DialogService.Close(false))" Text="Cancel" />
+                          Click="@(() => DialogService.Close(null))" Text="Cancel" />
         </div>
     </div>
 </RadzenTemplateForm>
@@ -61,7 +63,14 @@
 
     async Task OnSubmit(Event model)
     {
-        await _mediator.Send(new AddEventCommand(_model));
-        DialogService.Close(model);
+        try
+        {
+            await _mediator.Send(new AddEventCommand(_model));
+            DialogService.Close(model);
+        }
+        catch (Exception e)
+        {
+            NotificationService.Notify(NotificationSeverity.Info, "Event could not be saved.");
+        }
     }
 }

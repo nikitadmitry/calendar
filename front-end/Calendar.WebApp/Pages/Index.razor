@@ -1,11 +1,16 @@
 ﻿@page "/"
 @using Calendar.Agenda.Domain.Entities
 @using Calendar.WebApp.Domain.Interfaces
+@using Calendar.WebApp.Messaging
 @using MediatR
+@using Microsoft.AspNetCore.SignalR.Client
+
+@implements IAsyncDisposable
+@inject NavigationManager _navigationManager
 @inject DialogService _dialogService
 @inject IMediator _mediator
 
-<RadzenScheduler @ref=@scheduler TItem="Event" Data="_events" StartProperty="Start" EndProperty="End" TextProperty="Name"
+<RadzenScheduler @ref=@_scheduler TItem="Event" Data="_events" StartProperty="Start" EndProperty="End" TextProperty="Name"
                  SlotSelect=@OnSlotSelect AppointmentSelect=@OnAppointmentSelect
                  SelectedIndex="2" Style="height: 100%">
     <RadzenDayView />
@@ -14,8 +19,14 @@
 </RadzenScheduler>
 
 @code {
-    RadzenScheduler<Event> scheduler;
+    RadzenScheduler<Event> _scheduler = null!;
     private IList<Event>? _events;
+    private HubConnection? _hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ConnectAgendaUpdatesHubAsync();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -28,24 +39,65 @@
 
     async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
     {
-        Event data = await _dialogService.OpenAsync<AddEvent>("Add Event",
-            new Dictionary<string, object> { { "Start", args.Start }, { "End", args.End } });
+        var data = await _dialogService.OpenAsync<AddEvent>("Add Event",
+            new Dictionary<string, object>
+            {
+                { "Start", args.Start },
+                { "End", args.End }
+            });
 
         if (data != null)
         {
             _events?.Add(data);
-            await scheduler.Reload();
+            await _scheduler.Reload();
         }
     }
 
-    async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Event> args)
+    private async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Event> args)
     {
-        bool? removed = await _dialogService.OpenAsync<RemoveEvent>($"Remove '{args.Data.Name}'?",
-            new Dictionary<string, object> { { "Event", args.Data } });
+        bool? removed = await _dialogService.OpenAsync<RemoveEvent>(
+            $"Remove '{args.Data.Name}'?",
+            new Dictionary<string, object>
+            {
+                { "Event", args.Data }
+            });
+
         if (removed.GetValueOrDefault())
         {
             _events!.Remove(args.Data);
-            await scheduler.Reload();
+            await _scheduler.Reload();
+        }
+    }
+
+    private async Task ConnectAgendaUpdatesHubAsync()
+    {
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(_navigationManager.ToAbsoluteUri(Constants.AgendaUpdatesHub))
+            .Build();
+
+        _hubConnection.On<Event>(Constants.Messages.EventAdded, @event =>
+        {
+            _events?.Add(@event);
+            StateHasChanged();
+        });
+
+        _hubConnection.On<Guid>(Constants.Messages.EventRemoved, eventId =>
+        {
+            var @event = _events?.FirstOrDefault(x => x.Id == eventId);
+            if (@event is null) return;
+            
+            _events!.Remove(@event);
+            StateHasChanged();
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
         }
     }
 }

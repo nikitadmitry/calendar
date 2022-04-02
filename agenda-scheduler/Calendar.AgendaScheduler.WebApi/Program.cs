@@ -1,11 +1,14 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Calendar.AgendaScheduler.DataAccess.Interfaces;
+using Calendar.AgendaScheduler.DataAccess.Kafka;
 using Calendar.AgendaScheduler.DataAccess.MongoDb;
 using Calendar.AgendaScheduler.Domain;
 using Calendar.AgendaScheduler.Domain.Interfaces;
+using Confluent.Kafka;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,13 +29,29 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 
     return database;
 });
+
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile(typeof(MappingProfile)));
+builder.Services.AddSingleton<IProducer<Null, string>>(sp =>
+{
+    var config = new ProducerConfig
+    {
+        BootstrapServers = builder.Configuration["Kafka:Servers"],
+        ClientId = Dns.GetHostName()
+    };
+
+    var producer = new ProducerBuilder<Null, string>(config).Build();
+    return producer;
+});
+builder.Services.AddSingleton<KafkaTopicsProvider>();
+builder.Services.AddSingleton<IMessagePublisher, KafkaPublisher>();
+
 builder.Services.AddSingleton<IEventsRepository, EventsRepository>();
 builder.Services.AddSingleton<IInitializable, EventsRepository>();
 builder.Services.AddSingleton<IEventValidator, EventValidator>();
 builder.Services.AddSingleton<IEventScheduler, EventScheduler>();
+builder.Services.AddSingleton<IEventRemover, EventRemover>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
