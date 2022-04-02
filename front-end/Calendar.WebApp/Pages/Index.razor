@@ -46,11 +46,7 @@
                 { "End", args.End }
             });
 
-        if (data != null)
-        {
-            _events?.Add(data);
-            await _scheduler.Reload();
-        }
+        await TryAddEvent(data);
     }
 
     private async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Event> args)
@@ -64,33 +60,50 @@
 
         if (removed.GetValueOrDefault())
         {
-            _events!.Remove(args.Data);
-            await _scheduler.Reload();
+            await TryRemoveEvent(args.Data.Id);
         }
     }
 
-    private async Task ConnectAgendaUpdatesHubAsync()
+    private Task TryAddEvent(Event? @event)
+    {
+        if (@event is not null)
+        {
+            if (_events?.Any(x => x.Id == @event.Id) ?? true)
+            {
+                return Task.CompletedTask;
+            }
+
+            _events!.Add(@event);
+            return _scheduler.Reload();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task TryRemoveEvent(Guid? eventId)
+    {
+        if (eventId is not null)
+        {
+            var @event = _events?.FirstOrDefault(x => x.Id == eventId);
+            if (@event is null) return Task.CompletedTask;
+
+            _events!.Remove(@event);
+            return _scheduler.Reload();
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private Task ConnectAgendaUpdatesHubAsync()
     {
         _hubConnection = new HubConnectionBuilder()
             .WithUrl(_navigationManager.ToAbsoluteUri(Constants.AgendaUpdatesHub))
             .Build();
 
-        _hubConnection.On<Event>(Constants.Messages.EventAdded, @event =>
-        {
-            _events?.Add(@event);
-            StateHasChanged();
-        });
+        _hubConnection.On<Event>(Constants.Messages.EventAdded, TryAddEvent);
+        _hubConnection.On<Guid>(Constants.Messages.EventRemoved, eventId => TryRemoveEvent(eventId));
 
-        _hubConnection.On<Guid>(Constants.Messages.EventRemoved, eventId =>
-        {
-            var @event = _events?.FirstOrDefault(x => x.Id == eventId);
-            if (@event is null) return;
-            
-            _events!.Remove(@event);
-            StateHasChanged();
-        });
-
-        await _hubConnection.StartAsync();
+        return _hubConnection.StartAsync();
     }
 
     public async ValueTask DisposeAsync()
