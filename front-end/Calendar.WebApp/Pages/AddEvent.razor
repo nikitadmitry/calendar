@@ -1,0 +1,67 @@
+@using Calendar.Agenda.Domain.Entities
+@using Calendar.WebApp.Domain.Interfaces
+@using MediatR
+@inject DialogService DialogService
+@inject IMediator _mediator
+
+<RadzenTemplateForm TItem="Event" Data="@_model" Submit="@OnSubmit">
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="Text" />
+        </div>
+        <div class="col">
+            <RadzenTextBox @bind-Value="@_model.Name" Name="Name" />
+            <RadzenRequiredValidator Text="Name is required" Component="Name" />
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="Start" />
+        </div>
+        <div class="col">
+            <RadzenDatePicker @bind-Value="@_model.Start" Name="Start" ShowTime="true" />
+            <RadzenRequiredValidator Text="Start is required" Component="Start" />
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="End" />
+        </div>
+        <div class="col">
+            <RadzenDatePicker Name="End" @bind-Value="@_model.End" ShowTime="true" />
+            <RadzenRequiredValidator Component="End" Text="End is required" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
+            <RadzenButton ButtonStyle="ButtonStyle.Secondary" ButtonType="ButtonType.Reset"
+                          Click="@(() => DialogService.Close(false))" Text="Cancel" />
+        </div>
+    </div>
+</RadzenTemplateForm>
+@code {
+    [Parameter]
+    public DateTime Start { get; set; }
+
+    [Parameter]
+    public DateTime End { get; set; }
+
+    readonly Event _model = new Event
+    {
+        Id = Guid.NewGuid()
+    };
+
+    protected override void OnParametersSet()
+    {
+        _model.Start = Start;
+        _model.End = End;
+    }
+
+    async Task OnSubmit(Event model)
+    {
+        await _mediator.Send(new AddEventCommand(_model));
+        DialogService.Close(model);
+    }
+}

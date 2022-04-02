@@ -4,10 +4,21 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Calendar.AgendaScheduler.DataAccess.Interfaces\Calendar.AgendaScheduler.DataAccess.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Calendar.AgendaScheduler.DataAccess.MongoDb\Calendar.AgendaScheduler.DataAccess.MongoDb.csproj" />
+    <ProjectReference Include="..\..\common\Calendar.Agenda.Domain.Entities\Calendar.Agenda.Domain.Entities.csproj" />
+    <ProjectReference Include="..\Calendar.AgendaScheduler.DataAccess.Interfaces\Calendar.AgendaScheduler.DataAccess.Interfaces.csproj" />
+    <ProjectReference Include="..\Calendar.AgendaScheduler.DataAccess.MongoDb\Calendar.AgendaScheduler.DataAccess.MongoDb.csproj" />
+    <ProjectReference Include="..\Calendar.AgendaScheduler.Domain.Interfaces\Calendar.AgendaScheduler.Domain.Interfaces.csproj" />
+    <ProjectReference Include="..\Calendar.AgendaScheduler.Domain\Calendar.AgendaScheduler.Domain.csproj" />
   </ItemGroup>
 
 </Project>

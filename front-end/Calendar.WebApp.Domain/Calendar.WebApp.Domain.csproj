@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\common\Calendar.AgendaScheduler.Client\Calendar.AgendaScheduler.Client.csproj" />
+      <ProjectReference Include="..\..\common\Calendar.AgendaViewer.Client\Calendar.AgendaViewer.Client.csproj" />
+      <ProjectReference Include="..\Calendar.WebApp.Domain.Interfaces\Calendar.WebApp.Domain.Interfaces.csproj" />
+    </ItemGroup>
+
+</Project>

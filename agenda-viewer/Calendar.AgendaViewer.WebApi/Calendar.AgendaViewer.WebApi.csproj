@@ -4,10 +4,16 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Calendar.AgendaViewer.DataAccess.Contracts\Calendar.AgendaViewer.DataAccess.Contracts.csproj" />
+    <ProjectReference Include="..\Calendar.AgendaViewer.DataAccess.Redis\Calendar.AgendaViewer.DataAccess.Redis.csproj" />
   </ItemGroup>
 
 </Project>

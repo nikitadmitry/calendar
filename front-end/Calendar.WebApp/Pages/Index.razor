@@ -1,9 +1,51 @@
 ﻿@page "/"
+@using Calendar.Agenda.Domain.Entities
+@using Calendar.WebApp.Domain.Interfaces
+@using MediatR
+@inject DialogService _dialogService
+@inject IMediator _mediator
 
-<PageTitle>Index</PageTitle>
+<RadzenScheduler @ref=@scheduler TItem="Event" Data="_events" StartProperty="Start" EndProperty="End" TextProperty="Name"
+                 SlotSelect=@OnSlotSelect AppointmentSelect=@OnAppointmentSelect
+                 SelectedIndex="2" Style="height: 100%">
+    <RadzenDayView />
+    <RadzenWeekView />
+    <RadzenMonthView />
+</RadzenScheduler>
 
-<h1>Hello, world!</h1>
+@code {
+    RadzenScheduler<Event> scheduler;
+    private IList<Event>? _events;
 
-Welcome to your new app.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _events = (await _mediator.Send(new EventsQuery())).ToList();
+            StateHasChanged();
+        }
+    }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
+    {
+        Event data = await _dialogService.OpenAsync<AddEvent>("Add Event",
+            new Dictionary<string, object> { { "Start", args.Start }, { "End", args.End } });
+
+        if (data != null)
+        {
+            _events?.Add(data);
+            await scheduler.Reload();
+        }
+    }
+
+    async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<Event> args)
+    {
+        bool? removed = await _dialogService.OpenAsync<RemoveEvent>($"Remove '{args.Data.Name}'?",
+            new Dictionary<string, object> { { "Event", args.Data } });
+        if (removed.GetValueOrDefault())
+        {
+            _events!.Remove(args.Data);
+            await scheduler.Reload();
+        }
+    }
+}

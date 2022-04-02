@@ -1,0 +1,29 @@
+@using Calendar.Agenda.Domain.Entities
+@using Calendar.WebApp.Domain.Interfaces
+@using MediatR
+@inject DialogService DialogService
+@inject IMediator _mediator
+
+<RadzenTemplateForm TItem="Event" Data="@_model" Submit="@OnSubmit">
+    <RadzenButton ButtonType="ButtonType.Submit" Text="Remove" />
+    <RadzenButton ButtonStyle="ButtonStyle.Secondary" ButtonType="ButtonType.Reset"
+                  Click="@(() => DialogService.Close(false))" Text="Cancel" />
+</RadzenTemplateForm>
+
+@code {
+    [Parameter]
+    public Event Event { get; set; }
+
+    Event _model = new Event();
+
+    protected override void OnParametersSet()
+    {
+        _model = Event;
+    }
+
+    async Task OnSubmit(Event model)
+    {
+        await _mediator.Send(new RemoveEventCommand(model.Id));
+        DialogService.Close(true);
+    }
+}

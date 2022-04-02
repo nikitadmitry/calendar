@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Calendar.AgendaScheduler.DataAccess.Interfaces\Calendar.AgendaScheduler.DataAccess.Interfaces.csproj" />
+      <ProjectReference Include="..\Calendar.AgendaScheduler.DataAccess.Interfaces\Calendar.AgendaScheduler.DataAccess.Interfaces.csproj" />
+      <ProjectReference Include="..\Calendar.AgendaScheduler.Domain.Interfaces\Calendar.AgendaScheduler.Domain.Interfaces.csproj" />
+    </ItemGroup>
+
+</Project>

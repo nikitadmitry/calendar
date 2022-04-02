@@ -4,10 +4,20 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Radzen.Blazor" Version="3.17.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\common\Calendar.Agenda.Domain.Entities\Calendar.Agenda.Domain.Entities.csproj" />
+    <ProjectReference Include="..\..\common\Calendar.AgendaScheduler.Client\Calendar.AgendaScheduler.Client.csproj" />
+    <ProjectReference Include="..\..\common\Calendar.AgendaViewer.Client\Calendar.AgendaViewer.Client.csproj" />
+    <ProjectReference Include="..\..\common\Calendar.Client.Configuration.Extensions\Calendar.Client.Configuration.Extensions.csproj" />
+    <ProjectReference Include="..\Calendar.WebApp.Domain\Calendar.WebApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>

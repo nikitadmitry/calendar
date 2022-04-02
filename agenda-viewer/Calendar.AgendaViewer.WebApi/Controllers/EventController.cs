@@ -2,24 +2,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using Calendar.Agenda.Domain.Entities;
+using Calendar.AgendaViewer.DataAccess.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Calendar.AgendaViewer.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class EventController : ControllerBase
     {
-        [HttpGet("list")]
-        public IEnumerable<Event> GetAllEvents(CancellationToken cancellationToken)
+        private readonly IEventsRepository _eventsRepository;
+
+        public EventController(IEventsRepository eventsRepository)
         {
-            return Enumerable.Range(1, 5).Select(index => new Event
-                {
-                    Start = new DateTime(2022, 4, 3 * index),
-                    End = new DateTime(2022, 4, 3 * index + 3),
-                    Name = $"Event #{index}"
-                })
-                .ToArray();
+            _eventsRepository = eventsRepository;
         }
+
+        [HttpGet("all")]
+        public IAsyncEnumerable<Event> GetAllEventsAsync(CancellationToken cancellationToken)
+        {
+            return _eventsRepository.GetAllAsync(cancellationToken);
+        }
+
+#if DEBUG
+        [HttpPost("add")]
+        public Task AddEventAsync(Event @event, CancellationToken cancellationToken)
+        {
+            return _eventsRepository.AddAsync(@event, cancellationToken);
+        }
+#endif
     }
 }
