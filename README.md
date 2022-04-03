@@ -15,7 +15,7 @@ It's not allowed to have an overlapping schedule, and it's not allowed to span o
 
 ## Architecture diagram
 
-![Architecture Diagram](Architecture_diagram.jpg)
+![Architecture Diagram](images/architecture_diagram.png)
 
 ## Prerequisites
 
@@ -79,13 +79,30 @@ helm upgrade --install calendar-release . \
     --set agenda-viewer.env.REDIS__PASSWORD=$(kubectl get secret --namespace calendar calendar-redis-release -o jsonpath="{.data.redis-password}" | base64 --decode)
 ```
 
+## Step 4 - Visit the UI
+
+Navigate to `http://calendar.kube/` using a web browser.
+
+Click on a spot to add an event.
+
+Click on event and confirm to remove it. 
+
+Feel free to try it with multiple tabs, it's real-time.
+
+<details>
+<summary>Screenshots</summary>
+![Main UI](images/app_ui_1.png)
+![Add Event](images/app_ui_2.png)
+![Remove Event](images/app_ui_2.png)
+</details>
+
 # Support Stuff
 
 ## Minikube issues
 
 Docker images pull fails? Try running this `eval $(minikube docker-env)`.
 
-Ingress dns resolution fails? Here is a [possible fix](https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns/).
+Ingress dns resolution fails? Here is a [possible fix](https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns/), but instead of a "test" domain use a "kube" domain.
 
 ## Apache Kafka client
 
