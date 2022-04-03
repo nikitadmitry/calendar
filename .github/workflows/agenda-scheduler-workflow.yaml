@@ -4,11 +4,11 @@ on:
   push:
     branches: [ master ]  
     paths:
-      - agenda-scheduler/**
+      - /**
   pull_request:
     branches: [ master ]
     paths:
-      - agenda-scheduler/**
+      - /**
 
 jobs: 
   build:

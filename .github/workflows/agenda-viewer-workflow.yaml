@@ -4,11 +4,11 @@ on:
   push:
     branches: [ master ]  
     paths:
-      - agenda-viewer/**
+      - /**
   pull_request:
     branches: [ master ]
     paths:
-      - agenda-viewer/**
+      - /**
 
 jobs: 
   build:
