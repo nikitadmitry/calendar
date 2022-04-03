@@ -73,6 +73,7 @@ try
     builder.Services.AddSingleton<IEventScheduler, EventScheduler>();
     builder.Services.AddSingleton<IEventRemover, EventRemover>();
 
+    builder.Services.AddHealthChecks();
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -96,7 +97,7 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-
+    app.UseHealthChecks("/health");
     app.MapControllers();
 
     app.Run();

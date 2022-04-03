@@ -37,6 +37,7 @@ try
     builder.Services.AddKafkaConsumer<EventAddedMessageHandler, EventAddedMessage>();
     builder.Services.AddKafkaConsumer<EventRemovedMessageHandler, EventRemovedMessage>();
 
+    builder.Services.AddHealthChecks();
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -53,7 +54,7 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthorization();
-
+    app.UseHealthChecks("/health");
     app.MapControllers();
 
     app.Run();
