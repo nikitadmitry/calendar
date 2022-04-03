@@ -11,7 +11,7 @@ It's not allowed to have an overlapping schedule, and it's not allowed to span o
 - Agenda Viewer service: 2 replica's
 - Agenda Scheduler service: 2 replica's
 - Front End to view calendar and make schedules (does not have to be pretty, just functional): 1 replica
-- Some Unit tests
+- Some Unit tests (Check them [here](https://github.com/nikitadmitry/calendar/tree/master/agenda-scheduler/Calendar.AgendaScheduler.Domain.Tests))
 
 ## Architecture diagram
 
