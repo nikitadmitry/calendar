@@ -90,10 +90,10 @@ Click on event and confirm to remove it.
 Feel free to try it with multiple tabs, it's real-time.
 
 <details>
-<summary>Screenshots</summary>
-![Main UI](images/app_ui_1.png)
-![Add Event](images/app_ui_2.png)
-![Remove Event](images/app_ui_2.png)
+    <summary>Screenshots</summary>
+    <img src="images/app_ui_1.png"></img>
+    <img src="images/app_ui_2.png"></img>
+    <img src="images/app_ui_3.png"></img>
 </details>
 
 # Support Stuff
