@@ -4,9 +4,7 @@
 [![Agenda Viewer](https://github.com/nikitadmitry/calendar/actions/workflows/agenda-viewer-workflow.yaml/badge.svg)](https://github.com/nikitadmitry/calendar/actions/workflows/agenda-viewer-workflow.yaml)
 [![Front End](https://github.com/nikitadmitry/calendar/actions/workflows/front-end-workflow.yaml/badge.svg)](https://github.com/nikitadmitry/calendar/actions/workflows/front-end-workflow.yaml)
 
-### Demo
-
-Might be available [Here](https://bezdelnik.by/calendar)
+Demo might be available [Here](https://bezdelnik.by/calendar)
 
 ### Business Requirements
 This is a simple calendar app.
