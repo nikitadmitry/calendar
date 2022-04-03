@@ -8,10 +8,10 @@
 <RadzenTemplateForm TItem="Event" Data="@_model" Submit="@OnSubmit">
     <div class="row" style="margin-bottom: 16px">
         <div class="col-md-3">
-            <RadzenLabel Text="Text" />
+            <RadzenLabel Text="Name" />
         </div>
         <div class="col">
-            <RadzenTextBox @bind-Value="@_model.Name" Name="Name" />
+            <RadzenTextBox @bind-Value="@_model.Name" Name="Name" style="width: 100%" />
             <RadzenRequiredValidator Text="Name is required" Component="Name" />
         </div>
     </div>
@@ -20,7 +20,7 @@
             <RadzenLabel Text="Start" />
         </div>
         <div class="col">
-            <RadzenDatePicker @bind-Value="@_model.Start" Name="Start" ShowTime="true" />
+            <RadzenDatePicker @bind-Value="@_model.Start" Name="Start" ShowTime="true" style="width: 100%" />
             <RadzenRequiredValidator Text="Start is required" Component="Start" />
         </div>
     </div>
@@ -29,7 +29,7 @@
             <RadzenLabel Text="End" />
         </div>
         <div class="col">
-            <RadzenDatePicker Name="End" @bind-Value="@_model.End" ShowTime="true" />
+            <RadzenDatePicker Name="End" @bind-Value="@_model.End" ShowTime="true" style="width: 100%" />
             <RadzenRequiredValidator Component="End" Text="End is required" />
             <RadzenCompareValidator Value="@_model.Start" Text="End date must be more greater then Start"
                                     Component="End" Operator="CompareOperator.GreaterThan" />

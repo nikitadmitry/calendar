@@ -13,8 +13,8 @@
 <RadzenScheduler @ref=@_scheduler TItem="Event" Data="_events" StartProperty="Start" EndProperty="End" TextProperty="Name"
                  SlotSelect=@OnSlotSelect AppointmentSelect=@OnAppointmentSelect
                  SelectedIndex="2" Style="height: 100%">
-    <RadzenDayView />
-    <RadzenWeekView />
+    <RadzenDayView StartTime="@TimeSpan.FromHours(0.0)" />
+    <RadzenWeekView StartTime="@TimeSpan.FromHours(0.0)" />
     <RadzenMonthView />
 </RadzenScheduler>
 
