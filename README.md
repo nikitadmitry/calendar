@@ -4,9 +4,15 @@
 [![Agenda Viewer](https://github.com/nikitadmitry/calendar/actions/workflows/agenda-viewer-workflow.yaml/badge.svg)](https://github.com/nikitadmitry/calendar/actions/workflows/agenda-viewer-workflow.yaml)
 [![Front End](https://github.com/nikitadmitry/calendar/actions/workflows/front-end-workflow.yaml/badge.svg)](https://github.com/nikitadmitry/calendar/actions/workflows/front-end-workflow.yaml)
 
+### Demo
+
+Might be available [Here](https://bezdelnik.by/calendar)
+
 ### Business Requirements
-A simple calendar app.
+This is a simple calendar app.
+
 You can schedule something with a name, start date/time and end date/time.
+
 It's not allowed to have an overlapping schedule, and it's not allowed to span over multiple days.
 
 ### Technical Requirements
@@ -182,4 +188,59 @@ To connect to your database from outside the cluster execute the following comma
 ```
 kubectl port-forward --namespace calendar svc/calendar-mongodb-release 27017:27017 &
     mongo --host 127.0.0.1 --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD
+```
+
+## Deploying to AKS
+
+1. Create a cluster and a registry resources, enable `HTTP request routing`
+2. Install Helm charts the same way, use less resources for dev/test (Config below fits into a single Standard B2s node)
+```
+helm upgrade --install calendar-redis-release bitnami/redis --set master.persistence.size=500Mi --set replica.persistence.size=500Mi --set architecture=standalone
+helm upgrade --install calendar-mongodb-release bitnami/mongodb --set persistence.size=500Mi --set hidden.persistence.size=500Mi
+helm upgrade --install calendar-kafka-release bitnami/kafka --set persistence.size=500Mi --set logPersistence.size=500Mi --set zookeeper.persistence.size=500Mi --set livenessProbe.initialDelaySeconds=60 --set readinessProbe.initialDelaySeconds=60 --set startupProbe.initialDelaySeconds=60
+```
+3. Get cluster DNS zone, from portal or cli, and save it into a variable `azure_cluster_zone`
+```
+azure_cluster_zone=$(az aks show --name <cluster name> --resource-group <resource group name> --query addonProfiles.httpApplicationRouting.config.HTTPApplicationRoutingZoneName -o tsv) 
+```
+4A. Using prebuild images. Install the apps
+```
+helm upgrade --install calendar-release . \
+    --set agenda-viewer.image.tag="master" \
+    --set agenda-scheduler.image.tag="master" \
+    --set front-end.image.tag="master" \
+    --set agenda-viewer.image.repository=ghcr.io/nikitadmitry/calendar/agenda-viewer \
+    --set agenda-scheduler.image.repository=ghcr.io/nikitadmitry/calendar/agenda-scheduler \
+    --set front-end.image.repository=ghcr.io/nikitadmitry/calendar/front-end \
+    --set front-end.ingress.annotations."kubernetes\.io\/ingress\.class"=addon-http-application-routing \
+    --set "front-end.ingress.hosts[0].host"=calendar-cluster.$azure_cluster_zone \
+    --set "front-end.ingress.hosts[0].paths[0].path"="/" \
+    --set "front-end.ingress.hosts[0].paths[0].pathType"=Prefix \
+    --set agenda-scheduler.env.MONGO__CREDENTIAL__PASSWORD=$(kubectl get secret calendar-mongodb-release -o jsonpath="{.data.mongodb-root-password}" | base64 --decode) \
+    --set agenda-viewer.env.REDIS__PASSWORD=$(kubectl get secret calendar-redis-release -o jsonpath="{.data.redis-password}" | base64 --decode)
+```
+
+4B. Building images from source. Push images into a registry
+```
+az acr build --file ./agenda-scheduler/Calendar.AgendaScheduler.WebApi/Dockerfile --registry <registry name> --image calendar/agenda-scheduler:1.0.0 .
+az acr build --file ./agenda-viewer/Calendar.AgendaViewer.WebApi/Dockerfile --registry <registry name> --image calendar/agenda-viewer:1.0.0 .
+az acr build --file ./front-end/Calendar.WebApp/Dockerfile --registry <registry name> --image calendar/front-end:1.0.0 .
+```
+5B. Install the apps
+```
+azure_registry_name=<azure cr name>
+
+helm upgrade --install calendar-release . \
+    --set agenda-viewer.image.tag="1.0.0" \
+    --set agenda-scheduler.image.tag="1.0.0" \
+    --set front-end.image.tag="1.0.0" \
+    --set agenda-viewer.image.repository=$azure_registry_name/calendar/agenda-viewer \
+    --set agenda-scheduler.image.repository=$azure_registry_name/calendar/agenda-scheduler \
+    --set front-end.image.repository=$azure_registry_name/calendar/front-end \
+    --set front-end.ingress.annotations."kubernetes\.io\/ingress\.class"=addon-http-application-routing \
+    --set "front-end.ingress.hosts[0].host"=calendar-cluster.$azure_cluster_zone \
+    --set "front-end.ingress.hosts[0].paths[0].path"="/" \
+    --set "front-end.ingress.hosts[0].paths[0].pathType"=Prefix \
+    --set agenda-scheduler.env.MONGO__CREDENTIAL__PASSWORD=$(kubectl get secret calendar-mongodb-release -o jsonpath="{.data.mongodb-root-password}" | base64 --decode) \
+    --set agenda-viewer.env.REDIS__PASSWORD=$(kubectl get secret calendar-redis-release -o jsonpath="{.data.redis-password}" | base64 --decode)
 ```
