@@ -1,0 +1,30 @@
+name: Front End workflow
+
+on:
+  push:
+    branches: [ master ]  
+    paths:
+      - front-end/**
+  pull_request:
+    branches: [ master ]
+    paths:
+      - front-end/**
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: docker login
+      env:        
+        CR_USERNAME: ${{ secrets.CR_USERNAME }}
+        PAT: ${{ secrets.PAT }}
+      run: |
+        echo $PAT | docker login https://docker.pkg.github.com -u $CR_USERNAME --password-stdin
+    - name: build front-end Docker image 
+      run: |
+        docker build -f ./front-end/Calendar.WebApp/Dockerfile --pull --rm -t docker.pkg.github.com/${{ secrets.CR_USERNAME }}/calendar/front-end:${GITHUB_SHA} .
+    - name: push front-end to GitHub Packages
+      run: |
+        docker push docker.pkg.github.com/${{ secrets.CR_USERNAME }}/calendar/front-end:${GITHUB_SHA}

@@ -1,0 +1,30 @@
+name: Agenda Viewer workflow
+
+on:
+  push:
+    branches: [ master ]  
+    paths:
+      - agenda-viewer/**
+  pull_request:
+    branches: [ master ]
+    paths:
+      - agenda-viewer/**
+
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: docker login
+      env:        
+        CR_USERNAME: ${{ secrets.CR_USERNAME }}
+        PAT: ${{ secrets.PAT }}
+      run: |
+        echo $PAT | docker login https://docker.pkg.github.com -u $CR_USERNAME --password-stdin
+    - name: build agenda-viewer Docker image 
+      run: |
+        docker build -f ./agenda-viewer/Calendar.AgendaViewer.WebApi/Dockerfile --pull --rm -t docker.pkg.github.com/${{ secrets.CR_USERNAME }}/calendar/agenda-viewer:${GITHUB_SHA} .
+    - name: push agenda-viewer to GitHub Packages
+      run: |
+        docker push docker.pkg.github.com/${{ secrets.CR_USERNAME }}/calendar/agenda-viewer:${GITHUB_SHA}
