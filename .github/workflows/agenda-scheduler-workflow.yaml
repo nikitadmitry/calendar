@@ -2,29 +2,42 @@ name: Agenda Scheduler
 
 on:
   push:
-    branches: [ master ]  
-    paths:
-      - /**
-  pull_request:
-    branches: [ master ]
-    paths:
-      - /**
+    branches: ['master']
 
-jobs: 
-  build:
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: nikitadmitry/calendar/agenda-scheduler
+  DOCKERFILE_PATH: ./agenda-scheduler/Calendar.AgendaScheduler.WebApi/Dockerfile
+
+jobs:
+  build-and-push-image:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
+    permissions:
+      contents: read
+      packages: write
 
-    - name: docker login
-      env:        
-        CR_USERNAME: ${{ secrets.CR_USERNAME }}
-        PAT: ${{ secrets.PAT }}
-      run: |
-        echo $PAT | docker login https://ghcr.io -u $CR_USERNAME --password-stdin
-    - name: build agenda-scheduler Docker image 
-      run: |
-        docker build -f ./agenda-scheduler/Calendar.AgendaScheduler.WebApi/Dockerfile --pull --rm -t ghcr.io/${{ secrets.CR_USERNAME }}/calendar/agenda-scheduler:${GITHUB_SHA} .
-    - name: push agenda-scheduler to GitHub Packages
-      run: |
-        docker push ghcr.io/${{ secrets.CR_USERNAME }}/calendar/agenda-scheduler:${GITHUB_SHA}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          file: ${{ env.DOCKERFILE_PATH }}
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
