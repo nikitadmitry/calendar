@@ -18,7 +18,12 @@ namespace Calendar.AgendaScheduler.Domain
 
         public async Task<ValidationResult> IsValidAsync(Event @event, CancellationToken cancellationToken)
         {
-            if (@event.Start > @event.End)
+            if (string.IsNullOrWhiteSpace(@event.Name))
+            {
+                return ValidationResult.Failed("Name is not defined");
+            }
+
+            if (@event.Start >= @event.End)
             {
                 return ValidationResult.Failed("End date must be greater than start date");
             }

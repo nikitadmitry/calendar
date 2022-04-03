@@ -31,8 +31,8 @@
         <div class="col">
             <RadzenDatePicker Name="End" @bind-Value="@_model.End" ShowTime="true" />
             <RadzenRequiredValidator Component="End" Text="End is required" />
-            <RadzenCompareValidator Value="@_model.Start" Text="End date can't be less then Start"
-                                    Component="End" Operator="CompareOperator.GreaterThanEqual" />
+            <RadzenCompareValidator Value="@_model.Start" Text="End date must be more greater then Start"
+                                    Component="End" Operator="CompareOperator.GreaterThan" />
             <EqualDateValidator Value="@_model.Start" Component="End"  />
         </div>
     </div>

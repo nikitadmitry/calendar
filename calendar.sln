@@ -67,6 +67,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.Kafka.Abstractions
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.Kafka.Configuration.Extensions", "common\Calendar.Kafka.Configuration.Extensions\Calendar.Kafka.Configuration.Extensions.csproj", "{A103858C-F49F-45B3-86FE-328805513FC9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D2C25712-986A-4AEC-97F1-471C9C6BDFF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calendar.AgendaScheduler.Domain.Tests", "agenda-scheduler\Calendar.AgendaScheduler.Domain.Tests\Calendar.AgendaScheduler.Domain.Tests.csproj", "{B0AFB553-396B-44E5-B58C-5635B40A8CCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +160,10 @@ Global
 		{A103858C-F49F-45B3-86FE-328805513FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A103858C-F49F-45B3-86FE-328805513FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A103858C-F49F-45B3-86FE-328805513FC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0AFB553-396B-44E5-B58C-5635B40A8CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0AFB553-396B-44E5-B58C-5635B40A8CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0AFB553-396B-44E5-B58C-5635B40A8CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0AFB553-396B-44E5-B58C-5635B40A8CCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CEFF8861-A545-435D-AF4F-062AA5D3C085} = {5B6906D1-4FB2-4CA3-8093-C7D41CE1BBBF}
@@ -186,5 +194,7 @@ Global
 		{33F7597B-0A05-41E2-8219-227D2CDFD1B0} = {E21060CF-6645-49B2-BAF3-F6CA0EC4D94B}
 		{E13E711F-343C-40D8-978F-C5F53589B85B} = {C8766516-3788-4E58-902F-39BC5355311B}
 		{A103858C-F49F-45B3-86FE-328805513FC9} = {C8766516-3788-4E58-902F-39BC5355311B}
+		{D2C25712-986A-4AEC-97F1-471C9C6BDFF0} = {AB066262-7224-4477-B764-3676ED331FE7}
+		{B0AFB553-396B-44E5-B58C-5635B40A8CCF} = {D2C25712-986A-4AEC-97F1-471C9C6BDFF0}
 	EndGlobalSection
 EndGlobal
