@@ -31,6 +31,7 @@ try
         .ReadFrom.Configuration(ctx.Configuration));
 
     // Add services to the container.
+    builder.Services.AddHealthChecks();
     builder.Services.AddRazorPages();
     builder.Services.AddServerSideBlazor();
     builder.Services.AddResponseCompression(opts =>
@@ -73,6 +74,7 @@ try
     app.MapBlazorHub();
     app.MapHub<AgendaUpdatesHub>(Constants.AgendaUpdatesHub);
     app.MapFallbackToPage("/_Host");
+    app.UseHealthChecks("/health");
 
     app.Run();
 }

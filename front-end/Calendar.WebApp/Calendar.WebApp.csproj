@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="6.0.3" />
     <PackageReference Include="Radzen.Blazor" Version="3.17.3" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
   </ItemGroup>
