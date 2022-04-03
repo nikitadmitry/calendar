@@ -1,5 +1,9 @@
 # .NET Core, Blazor Server, Kafka, Redis and Mongo on Kubernetes
 
+[![Agenda Scheduler](https://github.com/nikitadmitry/calendar/actions/workflows/agenda-scheduler-workflow.yaml/badge.svg)](https://github.com/nikitadmitry/calendar/actions/workflows/agenda-scheduler-workflow.yaml)
+[![Agenda Viewer](https://github.com/nikitadmitry/calendar/actions/workflows/agenda-viewer-workflow.yaml/badge.svg)](https://github.com/nikitadmitry/calendar/actions/workflows/agenda-viewer-workflow.yaml)
+[![Front End](https://github.com/nikitadmitry/calendar/actions/workflows/front-end-workflow.yaml/badge.svg)](https://github.com/nikitadmitry/calendar/actions/workflows/front-end-workflow.yaml)
+
 ### Business Requirements
 A simple calendar app.
 You can schedule something with a name, start date/time and end date/time.
