@@ -1,14 +1,81 @@
-1) create images
+#) create images
 
-docker build -f ./agenda-viewer/Calendar.AgendaViewer.WebApi/Dockerfile -t calendar/agenda-viewer:0.1.0 .
-docker build -f ./agenda-scheduler/Calendar.AgendaScheduler.WebApi/Dockerfile -t calendar/agenda-scheduler:0.1.0 .
-docker build -f ./front-end/Calendar.WebApp/Dockerfile -t calendar/front-end:0.1.0 .
+docker build -f ./agenda-viewer/Calendar.AgendaViewer.WebApi/Dockerfile -t calendar/agenda-viewer:1.0.0 .
+docker build -f ./agenda-scheduler/Calendar.AgendaScheduler.WebApi/Dockerfile -t calendar/agenda-scheduler:1.0.0 .
+docker build -f ./front-end/Calendar.WebApp/Dockerfile -t calendar/front-end:1.0.0 .
 
-2) add to kuber
+#) install dependencies
+
+helm upgrade --install calendar-redis-release bitnami/redis --namespace=calendar
+helm upgrade --install calendar-mongodb-release bitnami/mongodb --namespace=calendar
+helm upgrade --install calendar-kafka-release bitnami/kafka --namespace=calendar
+
+Create kafka topics
+    kubectl exec -n=calendar --tty -i calendar-kafka-release-0 -- kafka-topics.sh --bootstrap-server localhost:9092 --topic scheduler_event_added --partitions 2 --create
+    kubectl exec -n=calendar --tty -i calendar-kafka-release-0 -- kafka-topics.sh --bootstrap-server localhost:9092 --topic scheduler_event_removed --partitions 2 --create
+
+#) Deploy the app to kuber
+
+cd scripts/charts/calendar
 
 helm upgrade --install calendar-release . \
     --namespace=calendar \
-    --set agenda-viewer.image.tag="0.1.0" \
-    --set agenda-scheduler.image.tag="0.1.0" \
-    --set front-end.image.tag="0.1.0" \
-    --debug --dry-run
+    --set agenda-viewer.image.tag="1.0.0" \
+    --set agenda-scheduler.image.tag="1.0.0" \
+    --set front-end.image.tag="1.0.0" \
+    --set agenda-scheduler.env.MONGO__CREDENTIAL__PASSWORD=$(kubectl get secret --namespace "calendar" calendar-mongodb-release -o jsonpath="{.data.mongodb-root-password}" | base64 --decode) \
+    --set agenda-viewer.env.REDIS__PASSWORD=$(kubectl get secret --namespace calendar calendar-redis-release -o jsonpath="{.data.redis-password}" | base64 --decode) \
+    --debug \
+    --dry-run
+
+
+
+
+SUPPORT STUFF
+
+- Minikube issues
+
+Docker images pull fails
+    eval $(minikube docker-env)
+
+Ingress dns resolution fails
+    https://minikube.sigs.k8s.io/docs/handbook/addons/ingress-dns/
+
+
+- Kafka Client pod
+
+To create a pod that you can use as a Kafka client run the following commands:
+
+    kubectl run calendar-kafka-release-client --restart='Never' --image docker.io/bitnami/kafka:3.1.0-debian-10-r64 --namespace calendar --command -- sleep infinity
+    kubectl exec --tty -i calendar-kafka-release-client --namespace calendar -- bash
+
+    PRODUCER:
+        kafka-console-producer.sh \
+            --broker-list calendar-kafka-release-headless:9092 \
+            --topic test
+
+    CONSUMER:
+        kafka-console-consumer.sh \
+            --bootstrap-server calendar-kafka-release:9092 \
+            --topic test \
+            --from-beginning
+
+    Check config value:
+        kafka-configs.sh --bootstrap-server calendar-kafka-release.calendar.svc.cluster.local:9092 \
+           --all --describe --entity-type brokers | grep "auto.create.topics.enable"
+
+- Mongo Client pod
+
+To connect to your database, create a MongoDB&reg; client container:
+
+    kubectl run --namespace calendar calendar-mongodb-release-client --rm --tty -i --restart='Never' \
+        --env="MONGODB_ROOT_PASSWORD=$MONGODB_ROOT_PASSWORD" --image docker.io/bitnami/mongodb:4.4.13-debian-10-r30 \
+        --command -- bash
+
+Then, run the following command:
+    mongo admin --host "calendar-mongodb-release" --authenticationDatabase admin -u root -p $MONGODB_ROOT_PASSWORD
+
+To connect to your database from outside the cluster execute the following commands:
+
+    kubectl port-forward --namespace calendar svc/calendar-mongodb-release 27017:27017 &
+    mongo --host 127.0.0.1 --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD

@@ -21,9 +21,9 @@ namespace Calendar.Kafka.Configuration.Extensions
 
                 var config = new ConsumerConfig
                 {
-                    BootstrapServers = options.Servers,
+                    BootstrapServers = options.BrokerList,
                     GroupId = options.ConsumerGroupId,
-                    AutoOffsetReset = AutoOffsetReset.Earliest
+                    AllowAutoCreateTopics = true
                 };
 
                 var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
