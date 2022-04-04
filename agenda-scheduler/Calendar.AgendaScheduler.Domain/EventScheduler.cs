@@ -33,9 +33,9 @@ public class EventScheduler : IEventScheduler
             throw new InvalidOperationException(validationResult.Message);
         }
 
-        await _eventsRepository.AddAsync(@event, cancellationToken);
-
         await PublishMessageAsync(@event, cancellationToken);
+
+        await _eventsRepository.AddAsync(@event, cancellationToken);
     }
 
     private Task PublishMessageAsync(Event @event, CancellationToken cancellationToken)

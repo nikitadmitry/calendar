@@ -54,7 +54,7 @@ helm upgrade --install calendar-mongodb-release bitnami/mongodb --namespace=cale
 helm upgrade --install calendar-kafka-release bitnami/kafka --namespace=calendar
 ```
 
-Based on configuration Kafka, it might be required to manually create the topics:
+Based on configuration of Kafka, it might be required to manually create the topics:
 ```
 kubectl exec -n=calendar --tty -i calendar-kafka-release-0 -- kafka-topics.sh --bootstrap-server localhost:9092 --topic scheduler_event_added --partitions 2 --create
 kubectl exec -n=calendar --tty -i calendar-kafka-release-0 -- kafka-topics.sh --bootstrap-server localhost:9092 --topic scheduler_event_removed --partitions 2 --create
@@ -191,11 +191,16 @@ kubectl port-forward --namespace calendar svc/calendar-mongodb-release 27017:270
 ## Deploying to AKS
 
 1. Create a cluster and a registry resources, enable `HTTP request routing`
-2. Install Helm charts the same way, use less resources for dev/test (Config below fits into a single Standard B2s node)
+2. Install Helm charts the same way, use less resources for dev/test (Config below fits into two Standard B2s worker nodes)
 ```
 helm upgrade --install calendar-redis-release bitnami/redis --set master.persistence.size=500Mi --set replica.persistence.size=500Mi --set architecture=standalone
 helm upgrade --install calendar-mongodb-release bitnami/mongodb --set persistence.size=500Mi --set hidden.persistence.size=500Mi
-helm upgrade --install calendar-kafka-release bitnami/kafka --set persistence.size=500Mi --set logPersistence.size=500Mi --set zookeeper.persistence.size=500Mi --set livenessProbe.initialDelaySeconds=60 --set readinessProbe.initialDelaySeconds=60 --set startupProbe.initialDelaySeconds=60
+helm upgrade --install calendar-kafka-release bitnami/kafka --set persistence.size=1Gi --set logPersistence.size=1Gi --set zookeeper.persistence.size=1Gi --set livenessProbe.initialDelaySeconds=60 --set readinessProbe.initialDelaySeconds=60 --set startupProbe.initialDelaySeconds=60
+```
+Create kafka topics
+```
+kubectl exec --tty -i calendar-kafka-release-0 -- kafka-topics.sh --bootstrap-server localhost:9092 --topic scheduler_event_added --partitions 2 --create
+kubectl exec --tty -i calendar-kafka-release-0 -- kafka-topics.sh --bootstrap-server localhost:9092 --topic scheduler_event_removed --partitions 2 --create
 ```
 3. Get cluster DNS zone, from portal or cli, and save it into a variable `azure_cluster_zone`
 ```
