@@ -1,6 +1,8 @@
 @using Calendar.Agenda.Domain.Entities
 @using Calendar.WebApp.Domain.Interfaces
 @using MediatR
+@using Refit
+@using System.Net
 @inject DialogService DialogService
 @inject NotificationService NotificationService
 @inject IMediator _mediator
@@ -70,9 +72,13 @@
             await _mediator.Send(new AddEventCommand(_model));
             DialogService.Close(model);
         }
-        catch (Exception e)
+        catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.BadRequest)
         {
-            NotificationService.Notify(NotificationSeverity.Info, "Event could not be saved.");
+            NotificationService.Notify(NotificationSeverity.Info, ex.Content);
+        }
+        catch
+        {
+            NotificationService.Notify(NotificationSeverity.Warning, "Failed to add the event.");
         }
     }
 }

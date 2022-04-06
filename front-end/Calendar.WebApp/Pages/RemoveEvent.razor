@@ -12,9 +12,9 @@
 
 @code {
     [Parameter]
-    public Event Event { get; set; }
+    public Event? Event { get; set; }
 
-    Event _model = new Event();
+    Event? _model = new();
 
     protected override void OnParametersSet()
     {
@@ -27,7 +27,7 @@
         {
             await _mediator.Send(new RemoveEventCommand(model.Id));
         }
-        catch (Exception e)
+        catch (Exception)
         {
             // ignored
         }

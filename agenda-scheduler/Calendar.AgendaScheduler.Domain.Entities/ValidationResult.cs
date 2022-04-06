@@ -1,4 +1,4 @@
-namespace Calendar.AgendaScheduler.Domain.Interfaces
+namespace Calendar.AgendaScheduler.Domain.Entities
 {
     public class ValidationResult
     {

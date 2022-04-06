@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -7,40 +8,43 @@ using Calendar.Agenda.Domain.Entities.Messages;
 using Calendar.AgendaScheduler.DataAccess.Interfaces;
 using Calendar.AgendaScheduler.Domain.Interfaces;
 
-public class EventScheduler : IEventScheduler
+namespace Calendar.AgendaScheduler.Domain
 {
-    private readonly IEventsRepository _eventsRepository;
-    private readonly IEventValidator _eventValidator;
-    private readonly IMessagePublisher _messagePublisher;
-    private readonly IMapper _mapper;
-
-    public EventScheduler(IEventsRepository eventsRepository,
-        IEventValidator eventValidator,
-        IMessagePublisher messagePublisher,
-        IMapper mapper)
+    public class EventScheduler : IEventScheduler
     {
-        _eventsRepository = eventsRepository;
-        _eventValidator = eventValidator;
-        _messagePublisher = messagePublisher;
-        _mapper = mapper;
-    }
+        private readonly IEventsRepository _eventsRepository;
+        private readonly IEventValidator _eventValidator;
+        private readonly IMessagePublisher _messagePublisher;
+        private readonly IMapper _mapper;
 
-    public async Task ScheduleAsync(Event @event, CancellationToken cancellationToken = default)
-    {
-        var validationResult = await _eventValidator.IsValidAsync(@event, cancellationToken);
-        if (!validationResult.IsValid)
+        public EventScheduler(IEventsRepository eventsRepository,
+            IEventValidator eventValidator,
+            IMessagePublisher messagePublisher,
+            IMapper mapper)
         {
-            throw new InvalidOperationException(validationResult.Message);
+            _eventsRepository = eventsRepository;
+            _eventValidator = eventValidator;
+            _messagePublisher = messagePublisher;
+            _mapper = mapper;
         }
 
-        await PublishMessageAsync(@event, cancellationToken);
+        public async Task ScheduleAsync(Event @event, CancellationToken cancellationToken = default)
+        {
+            var validationResult = await _eventValidator.IsValidAsync(@event, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Message);
+            }
 
-        await _eventsRepository.AddAsync(@event, cancellationToken);
-    }
+            await PublishMessageAsync(@event, cancellationToken);
 
-    private Task PublishMessageAsync(Event @event, CancellationToken cancellationToken)
-    {
-        var message = _mapper.Map<EventAddedMessage>(@event);
-        return _messagePublisher.PublishAsync(message, cancellationToken);
+            await _eventsRepository.AddAsync(@event, cancellationToken);
+        }
+
+        private Task PublishMessageAsync(Event @event, CancellationToken cancellationToken)
+        {
+            var message = _mapper.Map<EventAddedMessage>(@event);
+            return _messagePublisher.PublishAsync(message, cancellationToken);
+        }
     }
 }

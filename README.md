@@ -29,6 +29,7 @@ It's not allowed to have an overlapping schedule, and it's not allowed to span o
 
 This application requires you to have the following installed on your machine:
 
+- Linux Shell
 - Kubernetes CLI [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - Kubernetes cluster, such as [Minikube](https://docs.dapr.io/operations/hosting/kubernetes/cluster/setup-minikube/) or [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - Helm [Installing Helm](https://helm.sh/docs/intro/install/)
@@ -49,6 +50,7 @@ The easiest way to setup those on your Kubernetes cluster is by using [Helm](htt
 
 ```
 helm repo add bitnami https://charts.bitnami.com/bitnami
+kubectl create namespace calendar
 helm upgrade --install calendar-redis-release bitnami/redis --namespace=calendar
 helm upgrade --install calendar-mongodb-release bitnami/mongodb --namespace=calendar
 helm upgrade --install calendar-kafka-release bitnami/kafka --namespace=calendar

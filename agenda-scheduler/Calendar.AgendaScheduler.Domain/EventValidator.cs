@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Calendar.Agenda.Domain.Entities;
 using Calendar.AgendaScheduler.DataAccess.Interfaces;
+using Calendar.AgendaScheduler.Domain.Entities;
 using Calendar.AgendaScheduler.Domain.Interfaces;
 
 namespace Calendar.AgendaScheduler.Domain
@@ -38,7 +39,7 @@ namespace Calendar.AgendaScheduler.Domain
 
             if (overlaps.Any())
             {
-                return ValidationResult.Failed("Event overlaps with existing events");
+                return ValidationResult.Failed("Event overlaps with an existing event");
             }
 
             return ValidationResult.Succeed();

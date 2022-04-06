@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using Calendar.Agenda.Domain.Entities;
@@ -16,10 +17,10 @@ namespace Calendar.AgendaScheduler.Domain.Tests.EventIsScheduled
         }
 
         [Theory, AutoData]
-        public async Task Throws(Event @event)
+        public async Task ThrowsValidationException(Event @event)
         {
             await Subject.Invoking(x => x.ScheduleAsync(@event))
-                .Should().ThrowAsync<InvalidOperationException>();
+                .Should().ThrowAsync<ValidationException>();
         }
 
         [Theory, AutoData]
@@ -30,7 +31,7 @@ namespace Calendar.AgendaScheduler.Domain.Tests.EventIsScheduled
                 await Subject.ScheduleAsync(@event);
                 true.Should().BeFalse("Should throw");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // ignored
             }
@@ -46,7 +47,7 @@ namespace Calendar.AgendaScheduler.Domain.Tests.EventIsScheduled
                 await Subject.ScheduleAsync(@event);
                 true.Should().BeFalse("Should throw");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // ignored
             }

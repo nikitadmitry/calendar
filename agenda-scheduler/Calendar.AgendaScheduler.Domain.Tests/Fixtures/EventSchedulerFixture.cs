@@ -3,6 +3,7 @@ using AutoMapper;
 using Calendar.Agenda.Domain.Entities;
 using Calendar.Agenda.Domain.Entities.Messages;
 using Calendar.AgendaScheduler.DataAccess.Interfaces;
+using Calendar.AgendaScheduler.Domain.Entities;
 using Calendar.AgendaScheduler.Domain.Interfaces;
 using Moq;
 

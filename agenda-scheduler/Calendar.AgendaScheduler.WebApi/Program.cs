@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -9,8 +10,11 @@ using Calendar.AgendaScheduler.DataAccess.MongoDb;
 using Calendar.AgendaScheduler.Domain;
 using Calendar.AgendaScheduler.Domain.Interfaces;
 using Calendar.AgendaScheduler.WebApi.Configuration;
+using Calendar.AgendaScheduler.WebApi.Pipeline;
 using Confluent.Kafka;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -98,6 +102,7 @@ try
 
     app.UseAuthorization();
     app.UseHealthChecks("/health");
+    app.UseValidationExceptionHandlerMiddleware();
     app.MapControllers();
 
     app.Run();

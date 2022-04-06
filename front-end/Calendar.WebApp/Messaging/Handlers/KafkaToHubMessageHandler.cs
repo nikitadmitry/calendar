@@ -4,7 +4,7 @@ using Calendar.Agenda.Domain.Entities.Messages;
 using Calendar.Kafka.Abstractions;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Calendar.WebApp.Messaging
+namespace Calendar.WebApp.Messaging.Handlers
 {
     public abstract class KafkaToHubMessageHandler<TKafkaMessage, THubMessage> : IMessageHandler<TKafkaMessage> where TKafkaMessage : IMessage
     {

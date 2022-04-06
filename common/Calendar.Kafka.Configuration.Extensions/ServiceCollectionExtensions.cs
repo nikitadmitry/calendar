@@ -1,3 +1,4 @@
+using System;
 using Calendar.Agenda.Domain.Entities.Messages;
 using Calendar.Kafka.Abstractions;
 using Confluent.Kafka;
@@ -28,7 +29,8 @@ namespace Calendar.Kafka.Configuration.Extensions
 
                 var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
 
-                return new KafkaConsumer<TMessage>(options.Topics[typeof(TMessage).Name], consumer,
+                return new KafkaConsumer<TMessage>(options.Topics?[typeof(TMessage).Name] ??
+                                                   throw new InvalidOperationException($"Topic is undefined for {typeof(TMessage).Name}"), consumer,
                     sp.GetRequiredService<IMessageHandler<TMessage>>(),
                     sp.GetRequiredService<ILogger<KafkaConsumer<TMessage>>>());
             });

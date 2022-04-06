@@ -55,14 +55,14 @@ namespace Calendar.Kafka.Configuration.Extensions
                     }
                     catch (ConsumeException ex)
                     {
-                        if (ex.Error.IsFatal)
+                        if (ex.Error?.IsFatal ?? false)
                             throw;
 
                         _logger.LogError(ex, "Consumer failed with ConsumeException. Reason: " + ex.Error?.Reason);
                     }
                 }
             }
-            catch (OperationCanceledException ex)
+            catch (OperationCanceledException)
             {
                 _logger.LogInformation("Operation cancel exception");
             }
@@ -89,7 +89,7 @@ namespace Calendar.Kafka.Configuration.Extensions
             {
                 _task?.Wait();
             }
-            catch (AggregateException ex)
+            catch (AggregateException)
             {
                 _logger.LogInformation("Task canceled");
             }

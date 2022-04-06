@@ -2,7 +2,7 @@ using Calendar.Agenda.Domain.Entities;
 using Calendar.Agenda.Domain.Entities.Messages;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Calendar.WebApp.Messaging
+namespace Calendar.WebApp.Messaging.Handlers
 {
     public class EventAddedMessageHandler : KafkaToHubMessageHandler<EventAddedMessage, Event>
     {
